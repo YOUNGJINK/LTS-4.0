@@ -1,0 +1,304 @@
+<?php
+	include "sess_start.php";
+	include "config.inc";
+	include "include/SoonMysql.php";
+	include "include/SoonFunc.php";
+	include "include/usercheck.php";     // 로그인 및 권한체크
+
+	/**
+	*	2017-01-12 차혁준
+	*	서버 증설 후 업체별 IP확인을 위한 title IP출력
+	*/
+	if($YWID == 'superadmin') {
+		$server_addr = explode('.', $_SERVER['SERVER_ADDR']);
+		$s_addr = '['.$server_addr[3].']';
+	}
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title><?php echo $s_addr;?><?=$company_name?> 인트라넷 <? if($YWID) echo("  [접속자명:$YWNM]"); ?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<script language="javascript" src="./include/js/cfms.js"></script>
+<link href="./include/cfms.css" rel="stylesheet" type="text/css">
+<script id="dynamic"></script><!-- 이거 빼먹지 말것 -->
+</head>
+<body >
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td height="45" valign="top" bgcolor="E6EAED">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="420" valign="top">
+		    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+			    <!--<td><img src="../images/yellow_ribbon.png" height='45'></td>-->
+                <td width="220" height="45"><a href='index.htm'><img src="images/comp_logo/<?=$company_logo?>" height="45" border='0'></a></td>
+<?
+	if($YWID)
+	{
+		echo("
+			<td width='200' align='center' valign='bottom'>
+			    <font color='blue'><b>$YWNM</b><br>
+				<a href='sess_kill.php'><img src='images/logout_but.gif' width='60' height='18' border='0'></a>
+			</td>
+		");
+	}
+?>
+              </tr>
+            </table>
+          </td>
+          <td valign="top">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              
+              <tr>
+                <td align="right"> 
+                  <? 
+						include "include/top_menu.htm";
+				  ?>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" background="images/bg01.jpg">
+      <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr> 
+          <td height="10" colspan="2"></td>
+        </tr>
+        <tr valign="top"> 
+          <td width="5" height="500" id="nenuView" style="display:none">
+		  <img src='../images/left_menu.jpg' style="cursor:pointer;" alt="메뉴보이기" onClick="javascript:menuView('block');"></td>
+          <td width="180" id="menuView"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>
+				<? if($LTS["bwms"]) { ?>
+					<img src="../images/mymenu.gif" width="90" height="55" onclick="onMClick('<?=$conf_domain?>','<?=$group_code?>', 1)"  style="cursor:pointer;" alt='MY MENU'><img src="../images/mymenu_2.gif" style="width:90; height:55; cursor:pointer;" alt='메뉴감추기' onClick="javascript:menuView('none');">
+
+				<? } else { ?>
+					<img src="../images/mymenu.gif" width="90" height="55" onclick="openMymenu();"  style="cursor:pointer;" alt='MY MENU'><img src="../images/mymenu_2.gif" style="width:90; height:55; cursor:pointer;" alt='메뉴감추기' onClick="javascript:menuView('none');">
+				<? } ?>
+				</td>
+              </tr>
+              <tr>
+                <td valign="top">
+                  <table width="170" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td><img src="images/left_top.gif" width="170" height="15"></td>
+                    </tr>
+                    <tr>
+                      <td align="center" bgcolor="#FFFFFF">
+                        <!--좌측메뉴_start-->
+						<?	include "include/left_menu.php";	?>			
+						<!--좌측메뉴_end-->
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img src="images/left_bottom.gif" width="170" height="15"></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td height="12"></td>
+              </tr>
+              
+			<tr>
+				<td align="center">
+					<?php
+						// BY KBS. 2015.11.25 금강기기 납품업체일 경우 무른모 전화번호를 제거함.
+						if ( !$ENV_Supply_kumkang ) {
+							if ( $CONF[HIDDEN_MOORNMO] != 1 ) {
+								include 'include/webhard.htm';
+							}
+						}
+					?>
+				</td>
+			</tr>
+              <tr>
+                <td>&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td style="padding:0,10,0,0;">
+            <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td height="10" valign="top" bgcolor="#FFFFFF">
+                  <table width="100%" height="10" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td width="100%"></td>
+                      <td width="10"><img src="images/right_img.gif" width="10" height="10"></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" bgcolor="#FFFFFF" style="padding:0,10,10,10;">
+ 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td>
+                        <!--타이틀테이블_start-->
+						<table width="100%" height="35" border="0" cellpadding="4" cellspacing="0">
+						  <tr>
+							<td bgcolor="DEDEDE">
+							  <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+								<tr>
+								  <td width="20" align="right" bgcolor="#FFFFFF"><img src="images/title_icon.gif" width="11" height="13"></td>
+								  <td bgcolor="#FFFFFF">
+									<table width="100%" height="18" border="0" cellpadding="0" cellspacing="0">
+									  <tr>										
+										  <? if ($fold_grp =='재고' ){?>
+										<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<a href='./include/Excel/20150622_rest.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php }?><b></b></font></a></td>
+										<?}else if($fold_grp =='금형' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<a href='./include/Excel/20150622_mold.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a></td>
+										<?}else if($fold_grp =='원자재' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<? if($lite_conf_code != '1'){ ?><a href='./include/Excel/20150622_metal.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a><? } ?></td>
+										<?}else if($fold_grp =='부적합' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<a href='./include/Excel/20150309_14bad_code.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a></td>
+										<?}else if($fold_grp =='조립' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<a href='./include/Excel/20150622_bom.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a></td>
+										<?}else if($fold_grp =='공정분할' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<a href='./include/Excel/20150622_prog_division.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a></td>
+										<?}else if($fold_grp =='기초' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<? if($lite_conf_code != '1'){ ?><a href='./include/Excel/20150629_basic.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a><? } ?></td>
+										<?}else if($fold_grp =='계획' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<a href='./include/Excel/20150622_plan.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a></td>
+										<?}else if($fold_grp =='구매' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<? if($lite_conf_code != '1'){ ?><a href='./include/Excel/20150622_purchase.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a><? } ?></td>
+										<?}else if($fold_grp =='생산' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<? if($lite_conf_code != '1'){ ?><a href='./include/Excel/20150622_production.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a><? } ?></td>
+										<?}else if($fold_grp =='설비' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<? if($lite_conf_code != '1'){ ?><a href='./include/Excel/20150622_machine.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a><? } ?></td>
+										<?}else if($fold_grp =='영업' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;
+											<? if($lite_conf_code != '1'){ ?><a href='./include/Excel/20150622_biz.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a><? } ?></td>
+										<?}else if($fold_grp =='품질' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<a href='./include/Excel/20150622_quality.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a></td>
+										<?}else if($fold_grp =='외주' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<? if($lite_conf_code != '1'){ ?><a href='./include/Excel/20150622_out.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a><? } ?></td>
+										<?}else if($fold_grp =='개발' ) {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다&nbsp;&nbsp;&nbsp;<? if($lite_conf_code != '1'){ ?><a href='./include/Excel/20160404_dev.pptx'><font color='red'><?php if(!$CONF[HIDDEN_MOORNMO]){?><img src="./images/main_icon/manual.png" height="18" border="0"><?php } ?><b></b></font></a><? } ?></td>
+										<?}else {?>
+											<td valign="bottom"><font color='steelblue'><strong><?=$fold_grp?></strong></font> 메인화면입니다.</td>
+										<?}?>
+										<td>
+										
+										</td>
+									  </tr>
+									</table>
+								  </td>
+								  <td align="right" bgcolor="#FFFFFF">
+								 
+								  </td>
+								</tr>
+							  </table>
+							</td>
+						  </tr>
+						</table>
+						<!--타이틀테이블_end-->
+                      </td>
+                    </tr>
+                    <tr>
+                      <td height="10"></td>
+                    </tr>
+                    
+                    <tr>
+                      <td valign='top'>
+						<!--아이프레임_start-->
+						<table width="100%" border="0" cellspacing="0" cellpadding="10" style="border : 1 solid #D2D3D5;">
+						  <tr>
+                            <td valign="top">
+							<?php
+							
+							/*** BY KBS, 루틴 막음 $company_type ='GG' 막음
+							if($company_type == "GG")
+							{
+								if($page_group=="17000"){
+									$iframe_url = "../src/idx_index.php";
+								}else{
+									$iframe_url = "../src/main_home_gg.htm";
+								}
+							}
+							else
+							{
+							***/
+								if($page_group=="17000" && $CFMS_COMP_CODE=='gen' ){
+									$iframe_url = "../src/idx2_index.php";
+								} else if($page_group=="17000" && $CFMS_COMP_CODE !='gen' ){
+									$iframe_url = "../src/idx_index.php";
+								}else if($page_group == "12000" || $page_group == "13000" || $page_group == "F0100" || $page_group == "F0200" || $page_group == "F0300" || $page_group == "F0400")
+								{
+									$iframe_url = "../src/main_home_qc.htm";
+								}
+								else
+								{
+									$iframe_url = "../src/main_home.htm";
+								}
+							//}
+							
+							if( $page_group == "" && $NEW_MAIN_MODE ){
+								$iframe_url = "../src/main_home_new.htm";
+							}	
+
+							if( $page_group != "" && ( $CFMS_COMP_CODE=='dw-metal' || $CFMS_COMP_CODE=='frontec') ){
+								$iframe_url = "../src/main_home_new_sub.htm";
+							}
+
+							if($lite_conf_code == "1"){
+								$iframe_url = "../src/main_home_lite.htm";
+							}
+
+							//2015-10-22 영진
+							//config에서 메인화면 모드 잡아줌.
+							// 2015.12.2 $SIMPLE_MAIN_MODE2 추가함
+							if($SIMPLE_MAIN_MODE || $SIMPLE_MAIN_MODE2 ){
+								$iframe_url = "../src/main_home_simple.htm";
+							}
+							
+							$iframe_url = $iframe_url."?CFMS_COMP_CODE=".$CFMS_COMP_CODE."&CFMS_USER_ID=".$YWID;
+							
+							
+							
+							?>
+							
+							<iframe id="myframe" name="myframe" src="<?=$iframe_url?>" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0" style="overflow:none; width:100%;"  width="500" height="800"></iframe>
+							</td>
+                          </tr>
+                        </table>
+						<!--아이프레임_end-->
+					  </td>
+                    </tr>
+                    <tr>
+                      <td height="10">&nbsp;</td>
+                    </tr>
+                    
+                  </table>
+				</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<script>
+	function openMymenu(){
+		window.open("../pop_mymenu.htm", "", "width=10, height=10, scrollbars, resizable");	
+	}
+</script>
+
+<?php
+	if ($CFMS_COMP_CODE == 'scl' && !$page_group) {
+		include('index_popup.php');
+	}
+?>
+</body>
+</html>
+<!--
+<OBJECT classid="clsid:7CEEB7CE-9307-45D4-80D7-3B22207825EF" codebase="http://soonsoft.co.kr/ocx/PrintOcx.cab#version=1,0,2,0" width="0" height="0" id="AxPubPrint"></OBJECT>-->
